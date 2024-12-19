@@ -19,7 +19,11 @@ const createBoard = function() {
     }
 
     const selectSquare = function(squareOrder, marker) {
-        squares[squareOrder] = marker;
+        if (squares[squareOrder] === undefined) {
+            squares[squareOrder] = marker;
+            return true;
+        }
+        return false;
     }
 
     const getMarkerOnSquare = function(squareOrder) {
@@ -35,7 +39,8 @@ const createBoard = function() {
             || isTheSame(two, five, eight)
             || isTheSame(three, six, nine)
             || isTheSame(one, five, nine)
-            || isTheSame(three, five, seven));
+            || isTheSame(three, five, seven)
+            || !squares.includes(undefined));
     }
 
     function isTheSame(...numbers) {
@@ -64,9 +69,9 @@ const createGame = (function() {
             else {
                 currentPlayer = player2;
             }
-            player1Turn = !player1Turn;
 
-            board.selectSquare(choice, currentPlayer.getMarker());
+            if (board.selectSquare(choice, currentPlayer.getMarker()))
+                player1Turn = !player1Turn;
 
             const printBoard = (function() {
                 let printedBoard = "";
@@ -82,7 +87,7 @@ const createGame = (function() {
             console.log(printBoard);
             gameOver = board.checkGameOver();
         }
-        console.log("Won");
+        console.log("Game Over");
     }
 
     return playGame;
