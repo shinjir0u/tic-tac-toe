@@ -44,6 +44,7 @@
   :root {
     --body-color: rgb(235, 234, 255);
     --game-background-color: rgb(150, 148, 255);
+    --game-hover-background-color: rgb(111, 110, 219);
     --game-text-color: rgb(61, 59, 243);
     --border-color: rgb(255, 41, 41);
   }
@@ -70,4 +71,9 @@
     place-items: center;
     font-size: 4rem;
     color: var(--game-text-color);
+  }
+
+  .square:hover {
+    background-color: var(--game-hover-background-color);
+    cursor: pointer;
   }
