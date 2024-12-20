@@ -56,8 +56,8 @@
 
   .game {
     margin: auto;
-    width: max(300px, 50vw);
-    height: max(300px, 50vw);
+    width: clamp(300px, 50vw, 800px);
+    height: clamp(300px, 50vw, 800px);
     background-color: var(--game-background-color);
     display: grid;
     grid-template-columns: repeat(3, minmax(100px, 1fr));
