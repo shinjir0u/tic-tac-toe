@@ -12,7 +12,7 @@ const createPlayer = function(name, marker) {
 }
 
 const createBoard = function() {
-    const squares = new Array(9);
+    let squares = new Array(9);
 
     const getBoardSize = function() {
         return squares.length;
@@ -27,11 +27,11 @@ const createBoard = function() {
     }
 
     const getMarkerOnSquare = function(squareOrder) {
-        return squares[squareOrder] || ".";
+        return squares[squareOrder];
     }
 
     const checkGameOver = function() {
-        const [one, two, three, four, five, six, seven, eight, nine] = squares;
+        let [one, two, three, four, five, six, seven, eight, nine] = squares;
         return (isTheSame(one, two, three) 
             || isTheSame(four, five, six)
             || isTheSame(seven, eight, nine)
@@ -45,24 +45,30 @@ const createBoard = function() {
 
     function isTheSame(...numbers) {
         const firstNumber = numbers[0];
-        return numbers.every(number => (number === firstNumber && number !== undefined) );
+        return numbers.every(number => (number === firstNumber && number !== undefined));
     }
 
-    return { selectSquare, getMarkerOnSquare, getBoardSize, checkGameOver };
+    function clear() {
+        squares = new Array(9);
+    }
+
+    return { selectSquare, getMarkerOnSquare, getBoardSize, checkGameOver, clear };
 }
 
 const createGame = (function() {
+    const squares = document.querySelectorAll(".square");
+
     const player1 = createPlayer("player1", "O");
     const player2 = createPlayer("player2", "X");
     const board = createBoard();
 
+    let currentPlayerChoice;
     let gameOver = false;
     let player1Turn = true;
 
     const playGame = function() {
         let currentPlayer;
-        while(!gameOver) {
-            // const choice = (prompt ("Choose the square number")) - 1;
+        if (!gameOver) {
             if (player1Turn) {
                 currentPlayer = player1;
             }
@@ -70,30 +76,50 @@ const createGame = (function() {
                 currentPlayer = player2;
             }
 
-            if (board.selectSquare(choice, currentPlayer.getMarker()))
+            if (board.selectSquare(currentPlayerChoice, currentPlayer.getMarker()))
                 player1Turn = !player1Turn;
 
-            const printBoard = (function() {
-                let printedBoard = "";
-                for (let i=0; i<board.getBoardSize(); i++) {
-                    printedBoard += board.getMarkerOnSquare(i) + " ";
-        
-                    if ((i + 1) % 3 === 0)
-                        printedBoard += "\n";
-                }
-                return printedBoard;
-            })();
-
-            console.log(printBoard);
-            gameOver = board.checkGameOver();
+            displayBoard();
+            if (board.checkGameOver()) {
+                gameOver = true;
+                setTimeout(() => {
+                    alert(`${currentPlayer.getPlayerName()} wins`);
+                    if (prompt("Do u want to restart? y or n").toLowerCase() === 'y')
+                        resetGame();
+                }, 800);
+            }
         }
-        console.log("Game Over");
+        startGame();
     }
 
-    return playGame;
+    function startGame() {
+        squares.forEach(square => {
+            square.addEventListener("click", clickSquareEvent);
+        });
+    }
+
+    function clickSquareEvent(event) {
+        const square = event.target;
+        currentPlayerChoice = +square.lastElementChild.textContent;
+        playGame();
+    }
+
+    function displayBoard() {
+        for (let i=0; i<squares.length; i++) {
+            squares[i].firstElementChild.textContent = board.getMarkerOnSquare(i);
+        }
+    }
+
+    function resetGame() {
+        board.clear();
+        displayBoard();
+        startGame();
+        gameOver = false;
+        player1Turn = true;
+    }
+
+    return startGame;
 })();
-
-
 
 createGame();
 
