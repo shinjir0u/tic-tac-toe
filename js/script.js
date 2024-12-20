@@ -62,7 +62,7 @@ const createGame = (function() {
     const playGame = function() {
         let currentPlayer;
         while(!gameOver) {
-            const choice = (prompt ("Choose the square number")) - 1;
+            // const choice = (prompt ("Choose the square number")) - 1;
             if (player1Turn) {
                 currentPlayer = player1;
             }

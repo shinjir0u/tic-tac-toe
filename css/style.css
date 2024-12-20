@@ -41,3 +41,33 @@
   }
 
   /* My css is down here */
+  :root {
+    --body-color: rgb(235, 234, 255);
+    --game-background-color: rgb(150, 148, 255);
+    --game-text-color: rgb(61, 59, 243);
+    --border-color: rgb(255, 41, 41);
+  }
+
+  .game-container {
+    padding: 1rem;
+    height: 100vh;
+    background-color: var(--body-color);
+  }
+
+  .game {
+    margin: auto;
+    width: max(300px, 50vw);
+    height: max(300px, 50vw);
+    background-color: var(--game-background-color);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+    grid-template-rows: repeat(3, minmax(100px, 1fr));
+  }
+
+  .square {
+    border: 2px solid var(--border-color);
+    display: grid;
+    place-items: center;
+    font-size: 4rem;
+    color: var(--game-text-color);
+  }
