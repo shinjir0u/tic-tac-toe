@@ -1,66 +1,77 @@
-const createPlayer = function(name, marker) {
+class Player {
+    #name;
+    #marker;
     
-    const getPlayerName = function() {
-        return name;
+    constructor (name, marker) {
+        this.name = name;
+        this.marker = marker;
     }
 
-    const getMarker = function() {
-        return marker;
+    get name() {
+        return this.#name;
     }
 
-    return { getPlayerName, getMarker };
+    set name(name) {
+        this.#name = name;
+    }
+
+    get marker() {
+        return this.#marker;
+    }
+
+    set marker(marker) {
+        this.#marker = marker;
+    }
 }
 
-const createBoard = function() {
-    let squares = new Array(9);
+class Board {
+    #squares = new Array(9);
 
-    const getBoardSize = function() {
-        return squares.length;
+    getBoardSize() {
+        return this.#squares.length;
     }
 
-    const selectSquare = function(squareOrder, marker) {
-        if (squares[squareOrder] === undefined) {
-            squares[squareOrder] = marker;
+    selectSquare(squareOrder, marker) {
+        if (this.#squares[squareOrder] === undefined) {
+            this.#squares[squareOrder] = marker;
             return true;
         }
         return false;
     }
 
-    const getMarkerOnSquare = function(squareOrder) {
-        return squares[squareOrder];
+    getMarkerOnSquare(squareOrder) {
+        return this.#squares[squareOrder];
     }
 
-    const checkGameOver = function() {
-        let [one, two, three, four, five, six, seven, eight, nine] = squares;
-        return (isTheSame(one, two, three) 
-            || isTheSame(four, five, six)
-            || isTheSame(seven, eight, nine)
-            || isTheSame(one, four, seven)
-            || isTheSame(two, five, eight)
-            || isTheSame(three, six, nine)
-            || isTheSame(one, five, nine)
-            || isTheSame(three, five, seven)
-            || !squares.includes(undefined));
+    checkGameOver() {
+        let [one, two, three, four, five, six, seven, eight, nine] =this.#squares;
+        return (this.#isTheSame(one, two, three) 
+            || this.#isTheSame(four, five, six)
+            || this.#isTheSame(seven, eight, nine)
+            || this.#isTheSame(one, four, seven)
+            || this.#isTheSame(two, five, eight)
+            || this.#isTheSame(three, six, nine)
+            || this.#isTheSame(one, five, nine)
+            || this.#isTheSame(three, five, seven)
+            || !this.#squares.includes(undefined));
     }
 
-    function isTheSame(...numbers) {
+    #isTheSame(...numbers) {
         const firstNumber = numbers[0];
         return numbers.every(number => (number === firstNumber && number !== undefined));
     }
 
-    function clear() {
-        squares = new Array(9);
+    clear() {
+       this.#squares = new Array(9);
     }
-
-    return { selectSquare, getMarkerOnSquare, getBoardSize, checkGameOver, clear };
 }
 
 const createGame = (function() {
     const squares = document.querySelectorAll(".square");
 
-    const player1 = createPlayer("player1", "O");
-    const player2 = createPlayer("player2", "X");
-    const board = createBoard();
+    const player1 = new Player("player1", "O");
+    const player2 = new Player("player2", "X");
+    const board = new Board();
 
     let currentPlayerChoice;
     let gameOver = false;
@@ -76,14 +87,14 @@ const createGame = (function() {
                 currentPlayer = player2;
             }
 
-            if (board.selectSquare(currentPlayerChoice, currentPlayer.getMarker()))
+            if (board.selectSquare(currentPlayerChoice, currentPlayer.marker))
                 player1Turn = !player1Turn;
 
             displayBoard();
             if (board.checkGameOver()) {
                 gameOver = true;
                 setTimeout(() => {
-                    alert(`${currentPlayer.getPlayerName()} wins`);
+                    alert(`${currentPlayer.name} wins`);
                     if (prompt("Do u want to restart? y or n").toLowerCase() === 'y')
                         resetGame();
                 }, 800);
@@ -93,7 +104,7 @@ const createGame = (function() {
     }
 
     function startGame() {
-        squares.forEach(square => {
+       squares.forEach(square => {
             square.addEventListener("click", clickSquareEvent);
         });
     }
@@ -106,7 +117,7 @@ const createGame = (function() {
 
     function displayBoard() {
         for (let i=0; i<squares.length; i++) {
-            squares[i].firstElementChild.textContent = board.getMarkerOnSquare(i);
+           squares[i].firstElementChild.textContent = board.getMarkerOnSquare(i);
         }
     }
 
